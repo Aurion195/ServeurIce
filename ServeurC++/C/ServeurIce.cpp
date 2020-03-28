@@ -61,10 +61,12 @@ const ::std::string iceC_server_ServeurIce_ops[] =
     "ice_ids",
     "ice_isA",
     "ice_ping",
-    "jouerMusique"
+    "jouerMusique",
+    "stopMusique"
 };
 const ::std::string iceC_server_ServeurIce_ajouterMusique_name = "ajouterMusique";
 const ::std::string iceC_server_ServeurIce_jouerMusique_name = "jouerMusique";
+const ::std::string iceC_server_ServeurIce_stopMusique_name = "stopMusique";
 const ::std::string iceC_server_ServeurIce_display_name = "display";
 const ::std::string iceC_server_ServeurIce_getBdd_name = "getBdd";
 
@@ -129,6 +131,20 @@ server::ServeurIce::_iceD_jouerMusique(::IceInternal::Incoming& inS, const ::Ice
 
 /// \cond INTERNAL
 bool
+server::ServeurIce::_iceD_stopMusique(::IceInternal::Incoming& inS, const ::Ice::Current& current)
+{
+    _iceCheckMode(::Ice::OperationMode::Normal, current.mode);
+    inS.readEmptyParams();
+    bool ret = this->stopMusique(current);
+    auto ostr = inS.startWriteParams();
+    ostr->writeAll(ret);
+    inS.endWriteParams();
+    return true;
+}
+/// \endcond
+
+/// \cond INTERNAL
+bool
 server::ServeurIce::_iceD_display(::IceInternal::Incoming& inS, const ::Ice::Current& current)
 {
     _iceCheckMode(::Ice::OperationMode::Normal, current.mode);
@@ -157,7 +173,7 @@ server::ServeurIce::_iceD_getBdd(::IceInternal::Incoming& inS, const ::Ice::Curr
 bool
 server::ServeurIce::_iceDispatch(::IceInternal::Incoming& in, const ::Ice::Current& current)
 {
-    ::std::pair<const ::std::string*, const ::std::string*> r = ::std::equal_range(iceC_server_ServeurIce_ops, iceC_server_ServeurIce_ops + 8, current.operation);
+    ::std::pair<const ::std::string*, const ::std::string*> r = ::std::equal_range(iceC_server_ServeurIce_ops, iceC_server_ServeurIce_ops + 9, current.operation);
     if(r.first == r.second)
     {
         throw ::Ice::OperationNotExistException(__FILE__, __LINE__, current.id, current.facet, current.operation);
@@ -197,6 +213,10 @@ server::ServeurIce::_iceDispatch(::IceInternal::Incoming& in, const ::Ice::Curre
         {
             return _iceD_jouerMusique(in, current);
         }
+        case 8:
+        {
+            return _iceD_stopMusique(in, current);
+        }
         default:
         {
             assert(false);
@@ -229,6 +249,17 @@ server::ServeurIcePrx::_iceI_jouerMusique(const ::std::shared_ptr<::IceInternal:
         {
             ostr->writeAll(iceP_id);
         },
+        nullptr);
+}
+/// \endcond
+
+/// \cond INTERNAL
+void
+server::ServeurIcePrx::_iceI_stopMusique(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<bool>>& outAsync, const ::Ice::Context& context)
+{
+    _checkTwowayOnly(iceC_server_ServeurIce_stopMusique_name);
+    outAsync->invoke(iceC_server_ServeurIce_stopMusique_name, ::Ice::OperationMode::Normal, ::Ice::FormatType::DefaultFormat, context,
+        nullptr,
         nullptr);
 }
 /// \endcond
@@ -280,6 +311,8 @@ namespace
 const ::std::string iceC_server_ServeurIce_ajouterMusique_name = "ajouterMusique";
 
 const ::std::string iceC_server_ServeurIce_jouerMusique_name = "jouerMusique";
+
+const ::std::string iceC_server_ServeurIce_stopMusique_name = "stopMusique";
 
 const ::std::string iceC_server_ServeurIce_display_name = "display";
 
@@ -372,6 +405,46 @@ void
 IceProxy::server::ServeurIce::end_jouerMusique(const ::Ice::AsyncResultPtr& result)
 {
     _end(result, iceC_server_ServeurIce_jouerMusique_name);
+}
+
+::Ice::AsyncResultPtr
+IceProxy::server::ServeurIce::_iceI_begin_stopMusique(const ::Ice::Context& context, const ::IceInternal::CallbackBasePtr& del, const ::Ice::LocalObjectPtr& cookie, bool sync)
+{
+    _checkTwowayOnly(iceC_server_ServeurIce_stopMusique_name, sync);
+    ::IceInternal::OutgoingAsyncPtr result = new ::IceInternal::CallbackOutgoing(this, iceC_server_ServeurIce_stopMusique_name, del, cookie, sync);
+    try
+    {
+        result->prepare(iceC_server_ServeurIce_stopMusique_name, ::Ice::Normal, context);
+        result->writeEmptyParams();
+        result->invoke(iceC_server_ServeurIce_stopMusique_name);
+    }
+    catch(const ::Ice::Exception& ex)
+    {
+        result->abort(ex);
+    }
+    return result;
+}
+
+bool
+IceProxy::server::ServeurIce::end_stopMusique(const ::Ice::AsyncResultPtr& result)
+{
+    ::Ice::AsyncResult::_check(result, this, iceC_server_ServeurIce_stopMusique_name);
+    bool ret;
+    if(!result->_waitForResponse())
+    {
+        try
+        {
+            result->_throwUserException();
+        }
+        catch(const ::Ice::UserException& ex)
+        {
+            throw ::Ice::UnknownUserException(__FILE__, __LINE__, ex.ice_id());
+        }
+    }
+    ::Ice::InputStream* istr = result->_startReadParams();
+    istr->read(ret);
+    result->_endReadParams();
+    return ret;
 }
 
 ::Ice::AsyncResultPtr
@@ -533,6 +606,20 @@ server::ServeurIce::_iceD_jouerMusique(::IceInternal::Incoming& inS, const ::Ice
 
 /// \cond INTERNAL
 bool
+server::ServeurIce::_iceD_stopMusique(::IceInternal::Incoming& inS, const ::Ice::Current& current)
+{
+    _iceCheckMode(::Ice::Normal, current.mode);
+    inS.readEmptyParams();
+    bool ret = this->stopMusique(current);
+    ::Ice::OutputStream* ostr = inS.startWriteParams();
+    ostr->write(ret);
+    inS.endWriteParams();
+    return true;
+}
+/// \endcond
+
+/// \cond INTERNAL
+bool
 server::ServeurIce::_iceD_display(::IceInternal::Incoming& inS, const ::Ice::Current& current)
 {
     _iceCheckMode(::Ice::Normal, current.mode);
@@ -568,7 +655,8 @@ const ::std::string iceC_server_ServeurIce_all[] =
     "ice_ids",
     "ice_isA",
     "ice_ping",
-    "jouerMusique"
+    "jouerMusique",
+    "stopMusique"
 };
 
 }
@@ -577,7 +665,7 @@ const ::std::string iceC_server_ServeurIce_all[] =
 bool
 server::ServeurIce::_iceDispatch(::IceInternal::Incoming& in, const ::Ice::Current& current)
 {
-    ::std::pair<const ::std::string*, const ::std::string*> r = ::std::equal_range(iceC_server_ServeurIce_all, iceC_server_ServeurIce_all + 8, current.operation);
+    ::std::pair<const ::std::string*, const ::std::string*> r = ::std::equal_range(iceC_server_ServeurIce_all, iceC_server_ServeurIce_all + 9, current.operation);
     if(r.first == r.second)
     {
         throw ::Ice::OperationNotExistException(__FILE__, __LINE__, current.id, current.facet, current.operation);
@@ -616,6 +704,10 @@ server::ServeurIce::_iceDispatch(::IceInternal::Incoming& in, const ::Ice::Curre
         case 7:
         {
             return _iceD_jouerMusique(in, current);
+        }
+        case 8:
+        {
+            return _iceD_stopMusique(in, current);
         }
         default:
         {

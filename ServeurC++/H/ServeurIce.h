@@ -134,6 +134,11 @@ public:
     bool _iceD_jouerMusique(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
+    virtual bool stopMusique(const ::Ice::Current& current) = 0;
+    /// \cond INTERNAL
+    bool _iceD_stopMusique(::IceInternal::Incoming&, const ::Ice::Current&);
+    /// \endcond
+
     virtual void display(const ::Ice::Current& current) = 0;
     /// \cond INTERNAL
     bool _iceD_display(::IceInternal::Incoming&, const ::Ice::Current&);
@@ -208,6 +213,31 @@ public:
 
     /// \cond INTERNAL
     void _iceI_jouerMusique(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<void>>&, int, const ::Ice::Context&);
+    /// \endcond
+
+    bool stopMusique(const ::Ice::Context& context = ::Ice::noExplicitContext)
+    {
+        return _makePromiseOutgoing<bool>(true, this, &ServeurIcePrx::_iceI_stopMusique, context).get();
+    }
+
+    template<template<typename> class P = ::std::promise>
+    auto stopMusiqueAsync(const ::Ice::Context& context = ::Ice::noExplicitContext)
+        -> decltype(::std::declval<P<bool>>().get_future())
+    {
+        return _makePromiseOutgoing<bool, P>(false, this, &ServeurIcePrx::_iceI_stopMusique, context);
+    }
+
+    ::std::function<void()>
+    stopMusiqueAsync(::std::function<void(bool)> response,
+                     ::std::function<void(::std::exception_ptr)> ex = nullptr,
+                     ::std::function<void(bool)> sent = nullptr,
+                     const ::Ice::Context& context = ::Ice::noExplicitContext)
+    {
+        return _makeLamdaOutgoing<bool>(response, ex, sent, this, &server::ServeurIcePrx::_iceI_stopMusique, context);
+    }
+
+    /// \cond INTERNAL
+    void _iceI_stopMusique(const ::std::shared_ptr<::IceInternal::OutgoingAsyncT<bool>>&, const ::Ice::Context&);
     /// \endcond
 
     void display(const ::Ice::Context& context = ::Ice::noExplicitContext)
@@ -452,6 +482,14 @@ typedef ::IceUtil::Handle< Callback_ServeurIce_jouerMusique_Base> Callback_Serve
 
 /**
  * Base class for asynchronous callback wrapper classes used for calls to
+ * IceProxy::server::ServeurIce::begin_stopMusique.
+ * Create a wrapper instance by calling ::server::newCallback_ServeurIce_stopMusique.
+ */
+class Callback_ServeurIce_stopMusique_Base : public virtual ::IceInternal::CallbackBase { };
+typedef ::IceUtil::Handle< Callback_ServeurIce_stopMusique_Base> Callback_ServeurIce_stopMusiquePtr;
+
+/**
+ * Base class for asynchronous callback wrapper classes used for calls to
  * IceProxy::server::ServeurIce::begin_display.
  * Create a wrapper instance by calling ::server::newCallback_ServeurIce_display.
  */
@@ -551,6 +589,44 @@ public:
 private:
 
     ::Ice::AsyncResultPtr _iceI_begin_jouerMusique(::Ice::Int, const ::Ice::Context&, const ::IceInternal::CallbackBasePtr&, const ::Ice::LocalObjectPtr& cookie = 0, bool sync = false);
+
+public:
+
+    bool stopMusique(const ::Ice::Context& context = ::Ice::noExplicitContext)
+    {
+        return end_stopMusique(_iceI_begin_stopMusique(context, ::IceInternal::dummyCallback, 0, true));
+    }
+
+    ::Ice::AsyncResultPtr begin_stopMusique(const ::Ice::Context& context = ::Ice::noExplicitContext)
+    {
+        return _iceI_begin_stopMusique(context, ::IceInternal::dummyCallback, 0);
+    }
+
+    ::Ice::AsyncResultPtr begin_stopMusique(const ::Ice::CallbackPtr& cb, const ::Ice::LocalObjectPtr& cookie = 0)
+    {
+        return _iceI_begin_stopMusique(::Ice::noExplicitContext, cb, cookie);
+    }
+
+    ::Ice::AsyncResultPtr begin_stopMusique(const ::Ice::Context& context, const ::Ice::CallbackPtr& cb, const ::Ice::LocalObjectPtr& cookie = 0)
+    {
+        return _iceI_begin_stopMusique(context, cb, cookie);
+    }
+
+    ::Ice::AsyncResultPtr begin_stopMusique(const ::server::Callback_ServeurIce_stopMusiquePtr& cb, const ::Ice::LocalObjectPtr& cookie = 0)
+    {
+        return _iceI_begin_stopMusique(::Ice::noExplicitContext, cb, cookie);
+    }
+
+    ::Ice::AsyncResultPtr begin_stopMusique(const ::Ice::Context& context, const ::server::Callback_ServeurIce_stopMusiquePtr& cb, const ::Ice::LocalObjectPtr& cookie = 0)
+    {
+        return _iceI_begin_stopMusique(context, cb, cookie);
+    }
+
+    bool end_stopMusique(const ::Ice::AsyncResultPtr& result);
+
+private:
+
+    ::Ice::AsyncResultPtr _iceI_begin_stopMusique(const ::Ice::Context&, const ::IceInternal::CallbackBasePtr&, const ::Ice::LocalObjectPtr& cookie = 0, bool sync = false);
 
 public:
 
@@ -695,6 +771,11 @@ public:
     virtual void jouerMusique(::Ice::Int id, const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
     /// \cond INTERNAL
     bool _iceD_jouerMusique(::IceInternal::Incoming&, const ::Ice::Current&);
+    /// \endcond
+
+    virtual bool stopMusique(const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
+    /// \cond INTERNAL
+    bool _iceD_stopMusique(::IceInternal::Incoming&, const ::Ice::Current&);
     /// \endcond
 
     virtual void display(const ::Ice::Current& current = ::Ice::emptyCurrent) = 0;
@@ -1079,6 +1160,158 @@ template<class T, typename CT> Callback_ServeurIce_jouerMusiquePtr
 newCallback_ServeurIce_jouerMusique(T* instance, void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
 {
     return new Callback_ServeurIce_jouerMusique<T, CT>(instance, 0, excb, sentcb);
+}
+
+/**
+ * Type-safe asynchronous callback wrapper class used for calls to
+ * IceProxy::server::ServeurIce::begin_stopMusique.
+ * Create a wrapper instance by calling ::server::newCallback_ServeurIce_stopMusique.
+ */
+template<class T>
+class CallbackNC_ServeurIce_stopMusique : public Callback_ServeurIce_stopMusique_Base, public ::IceInternal::TwowayCallbackNC<T>
+{
+public:
+
+    typedef IceUtil::Handle<T> TPtr;
+
+    typedef void (T::*Exception)(const ::Ice::Exception&);
+    typedef void (T::*Sent)(bool);
+    typedef void (T::*Response)(bool);
+
+    CallbackNC_ServeurIce_stopMusique(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
+        : ::IceInternal::TwowayCallbackNC<T>(obj, cb != 0, excb, sentcb), _response(cb)
+    {
+    }
+
+    /// \cond INTERNAL
+    virtual void completed(const ::Ice::AsyncResultPtr& result) const
+    {
+        ServeurIcePrx proxy = ServeurIcePrx::uncheckedCast(result->getProxy());
+        bool ret;
+        try
+        {
+            ret = proxy->end_stopMusique(result);
+        }
+        catch(const ::Ice::Exception& ex)
+        {
+            ::IceInternal::CallbackNC<T>::exception(result, ex);
+            return;
+        }
+        if(_response)
+        {
+            (::IceInternal::CallbackNC<T>::_callback.get()->*_response)(ret);
+        }
+    }
+    /// \endcond
+
+private:
+
+    Response _response;
+};
+
+/**
+ * Creates a callback wrapper instance that delegates to your object.
+ * @param instance The callback object.
+ * @param cb The success method of the callback object.
+ * @param excb The exception method of the callback object.
+ * @param sentcb The sent method of the callback object.
+ * @return An object that can be passed to an asynchronous invocation of IceProxy::server::ServeurIce::begin_stopMusique.
+ */
+template<class T> Callback_ServeurIce_stopMusiquePtr
+newCallback_ServeurIce_stopMusique(const IceUtil::Handle<T>& instance, void (T::*cb)(bool), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+{
+    return new CallbackNC_ServeurIce_stopMusique<T>(instance, cb, excb, sentcb);
+}
+
+/**
+ * Creates a callback wrapper instance that delegates to your object.
+ * @param instance The callback object.
+ * @param cb The success method of the callback object.
+ * @param excb The exception method of the callback object.
+ * @param sentcb The sent method of the callback object.
+ * @return An object that can be passed to an asynchronous invocation of IceProxy::server::ServeurIce::begin_stopMusique.
+ */
+template<class T> Callback_ServeurIce_stopMusiquePtr
+newCallback_ServeurIce_stopMusique(T* instance, void (T::*cb)(bool), void (T::*excb)(const ::Ice::Exception&), void (T::*sentcb)(bool) = 0)
+{
+    return new CallbackNC_ServeurIce_stopMusique<T>(instance, cb, excb, sentcb);
+}
+
+/**
+ * Type-safe asynchronous callback wrapper class with cookie support used for calls to
+ * IceProxy::server::ServeurIce::begin_stopMusique.
+ * Create a wrapper instance by calling ::server::newCallback_ServeurIce_stopMusique.
+ */
+template<class T, typename CT>
+class Callback_ServeurIce_stopMusique : public Callback_ServeurIce_stopMusique_Base, public ::IceInternal::TwowayCallback<T, CT>
+{
+public:
+
+    typedef IceUtil::Handle<T> TPtr;
+
+    typedef void (T::*Exception)(const ::Ice::Exception& , const CT&);
+    typedef void (T::*Sent)(bool , const CT&);
+    typedef void (T::*Response)(bool, const CT&);
+
+    Callback_ServeurIce_stopMusique(const TPtr& obj, Response cb, Exception excb, Sent sentcb)
+        : ::IceInternal::TwowayCallback<T, CT>(obj, cb != 0, excb, sentcb), _response(cb)
+    {
+    }
+
+    /// \cond INTERNAL
+    virtual void completed(const ::Ice::AsyncResultPtr& result) const
+    {
+        ServeurIcePrx proxy = ServeurIcePrx::uncheckedCast(result->getProxy());
+        bool ret;
+        try
+        {
+            ret = proxy->end_stopMusique(result);
+        }
+        catch(const ::Ice::Exception& ex)
+        {
+            ::IceInternal::Callback<T, CT>::exception(result, ex);
+            return;
+        }
+        if(_response)
+        {
+            (::IceInternal::Callback<T, CT>::_callback.get()->*_response)(ret, CT::dynamicCast(result->getCookie()));
+        }
+    }
+    /// \endcond
+
+private:
+
+    Response _response;
+};
+
+/**
+ * Creates a callback wrapper instance that delegates to your object.
+ * Use this overload when your callback methods receive a cookie value.
+ * @param instance The callback object.
+ * @param cb The success method of the callback object.
+ * @param excb The exception method of the callback object.
+ * @param sentcb The sent method of the callback object.
+ * @return An object that can be passed to an asynchronous invocation of IceProxy::server::ServeurIce::begin_stopMusique.
+ */
+template<class T, typename CT> Callback_ServeurIce_stopMusiquePtr
+newCallback_ServeurIce_stopMusique(const IceUtil::Handle<T>& instance, void (T::*cb)(bool, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+{
+    return new Callback_ServeurIce_stopMusique<T, CT>(instance, cb, excb, sentcb);
+}
+
+/**
+ * Creates a callback wrapper instance that delegates to your object.
+ * Use this overload when your callback methods receive a cookie value.
+ * @param instance The callback object.
+ * @param cb The success method of the callback object.
+ * @param excb The exception method of the callback object.
+ * @param sentcb The sent method of the callback object.
+ * @return An object that can be passed to an asynchronous invocation of IceProxy::server::ServeurIce::begin_stopMusique.
+ */
+template<class T, typename CT> Callback_ServeurIce_stopMusiquePtr
+newCallback_ServeurIce_stopMusique(T* instance, void (T::*cb)(bool, const CT&), void (T::*excb)(const ::Ice::Exception&, const CT&), void (T::*sentcb)(bool, const CT&) = 0)
+{
+    return new Callback_ServeurIce_stopMusique<T, CT>(instance, cb, excb, sentcb);
 }
 
 /**

@@ -1,26 +1,19 @@
-CXX=g++
 CXXFLAGS=-std=c++11 -I ServeurC++/H -DICE_CPP11_MAPPING
-LDFLAGS=-lIce++11 -lvlc -pthread
 
-dir=ServeurC++/
-dirpy=python/
-dirjava=java/
-headers=H/
-src=C/
-obj=O/
-projet=serv
+serveurMP3 : ServeurC++/O/Main.o ServeurC++/O/Server.o ServeurC++/O/IServer.o
+	g++ -o serveurMP3 -g $^ -lIce++11 -lvlc -pthread
 
-${projet} : ${dir}${obj}main.o ${dir}${obj}Server.o ${dir}${obj}IServer.o
-	${CXX} -o ${projet} -g $^ ${LDFLAGS}
+ServeurC++/O/Main.o : ServeurC++/C/Main.cpp
+	g++ ${CXXFLAGS} -o ServeurC++/O/Main.o -c $<
 
-${dir}${obj}main.o : ${dir}${src}Main.cpp
-	${CXX} ${CXXFLAGS} -o $@ -c $<
+ServeurC++/O/Server.o : ServeurC++/C/Launcher.cpp ServeurC++/H/Launcher.h
+	g++ ${CXXFLAGS} -o ServeurC++/O/Server.o -c $<
 
-${dir}${obj}Server.o : ${dir}${src}launcher.cpp ${dir}${headers}launcher.h
-	${CXX} ${CXXFLAGS} -o $@ -c $<
+ServeurC++/O/IServer.o : ServeurC++/C/ServeurIce.cpp ServeurC++/H/ServeurIce.h
+	g++ ${CXXFLAGS} -o ServeurC++/O/IServer.o -c $<
 
-${dir}${obj}IServer.o : ${dir}${src}ServeurIce.cpp ${dir}${headers}ServeurIce.h
-	${CXX} ${CXXFLAGS} -o $@ -c $<
+Client :
+	python python/Client.py
 
 ice:
 	slice2cpp ServeurIce.ice
@@ -30,4 +23,11 @@ ice:
 	mv ServeurIce_ice.py python/
 
 clean:
-	rm -rf ServeurC++/O/
+	rm ServeurC++/O/*.o
+
+mrPropre: clean
+	rm serveurMP3
+
+install:
+	sudo apt-get install zeroc-ice-all-runtime zeroc-ice-all-dev
+	sudo apt-get install libvlccore-dev

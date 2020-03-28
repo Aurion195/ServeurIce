@@ -10,6 +10,7 @@ module server {
     interface ServeurIce {
         bool ajouterMusique(string name) ;
         void jouerMusique(int id) ;
+        bool stopMusique() ;
         void display();
         bdd getBdd();
     };

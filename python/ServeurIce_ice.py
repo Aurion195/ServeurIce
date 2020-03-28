@@ -157,6 +157,18 @@ if 'ServeurIcePrx' not in _M_server.__dict__:
         def end_jouerMusique(self, _r):
             return _M_server.ServeurIce._op_jouerMusique.end(self, _r)
 
+        def stopMusique(self, context=None):
+            return _M_server.ServeurIce._op_stopMusique.invoke(self, ((), context))
+
+        def stopMusiqueAsync(self, context=None):
+            return _M_server.ServeurIce._op_stopMusique.invokeAsync(self, ((), context))
+
+        def begin_stopMusique(self, _response=None, _ex=None, _sent=None, context=None):
+            return _M_server.ServeurIce._op_stopMusique.begin(self, ((), _response, _ex, _sent, context))
+
+        def end_stopMusique(self, _r):
+            return _M_server.ServeurIce._op_stopMusique.end(self, _r)
+
         def display(self, context=None):
             return _M_server.ServeurIce._op_display.invoke(self, ((), context))
 
@@ -216,6 +228,9 @@ if 'ServeurIcePrx' not in _M_server.__dict__:
         def jouerMusique(self, id, current=None):
             raise NotImplementedError("servant method 'jouerMusique' not implemented")
 
+        def stopMusique(self, current=None):
+            raise NotImplementedError("servant method 'stopMusique' not implemented")
+
         def display(self, current=None):
             raise NotImplementedError("servant method 'display' not implemented")
 
@@ -232,6 +247,7 @@ if 'ServeurIcePrx' not in _M_server.__dict__:
 
     ServeurIce._op_ajouterMusique = IcePy.Operation('ajouterMusique', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_string, False, 0),), (), ((), IcePy._t_bool, False, 0), ())
     ServeurIce._op_jouerMusique = IcePy.Operation('jouerMusique', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_int, False, 0),), (), None, ())
+    ServeurIce._op_stopMusique = IcePy.Operation('stopMusique', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (), ((), IcePy._t_bool, False, 0), ())
     ServeurIce._op_display = IcePy.Operation('display', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (), None, ())
     ServeurIce._op_getBdd = IcePy.Operation('getBdd', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (), ((), _M_server._t_bdd, False, 0), ())
 
